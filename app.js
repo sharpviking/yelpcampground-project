@@ -24,7 +24,7 @@ const reviewRoutes = require('./routes/reviews');
 const MongoStore = require('connect-mongo');
 
 
-const dbUrl = process.env.DB_URL1
+const dbUrl = process.env.DB_URL
 
 
 mongoose.connect(dbUrl, {
@@ -59,11 +59,13 @@ app.use(mongoSanitize())
 //     touchAfter: 24 * 60 * 60
 // });
 
+const secret = process.env.SECRET || 'thisshouldbeabettersecret!';
+
 const store = MongoStore.create({
     mongoUrl: dbUrl,
     touchAfter: 24 * 60 * 60,
     crypto: {
-        secret: 'thisshouldbeabettersecret!'
+        secret,
     }
 });
 
@@ -74,7 +76,7 @@ store.on("error", function (e) {
 const sessionConfig = {
     store,
     name: 'session',
-    secret: 'thisshouldbeabettersecret!',
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
